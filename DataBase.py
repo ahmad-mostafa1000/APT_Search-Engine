@@ -2,29 +2,28 @@ import pyodbc
 
 class DataBaseMaster:
 
-    def __init__(self):
-
+	def __init__(self):
         self.Connector = pyodbc.connect("Driver={ODBC Driver 13 for SQL Server};"
                                         "Server=MOHAMMED\SQLEXPRESS;"
                                         "Database=CrawlerDB;"
                                         "Trusted_Connection=yes;")
         self.Curser = self.Connector.cursor()
 
-    def InsertNewUrl(self,URL,status,freq):        
+	def InsertNewUrl(self,URL,status,freq):        
         try:
            self.Connector.execute("insert into dbo.Url_Container (URLName,Status,Frequency) values ('%s','%s',%d)" % (Data,status,freq))
            self.Connector.commit()
         except:
           self.Connector.rollback()
         
-     def UpdateURLStatus(self,URL_ID,status):        
+	def UpdateURLStatus(self,URL_ID,status):        
         try:
            self.Connector.execute("update Url_Container set Status = '%s' where URL_ID = %d" % (status,URL_ID))
            self.Connector.commit()
         except:
           self.Connector.rollback() 
 		  
-	 def InsertKeyWord(self,Data):        
+	def InsertKeyWord(self,Data):        
         try:
            self.Connector.execute("insert into dbo.KeyWords (KeyWords) values ('%s')" % (Data))
            self.Connector.commit()
@@ -66,12 +65,11 @@ class DataBaseMaster:
         except:
           self.Connector.rollback()
 	
-
-    def CloseConnection(self):
+	def CloseConnection(self):
         self.Connector.close()
         
         
 #Get URLID given word       "select URL_ID from Url_Container where URLName = '%s'"
 #Get KeyWordID given word   "select KeyWord_ID from KeyWords where KeyWords = '%s'"
 #Get ImageKeyWord_ID given  "select ImageKeyWord_ID from ImageKeyWords where ImageKeyWords = '%s'"
-# Final search query not done PHASE 2
+#Update URL_Container ID    "update Url_Container set Status = '%s' where URL_ID = %d"
