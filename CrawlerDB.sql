@@ -1,4 +1,3 @@
-``` SQL
 USE [CrawlerDB]
 GO
 /****** Object:  Table [dbo].[ImageKeyWords]    Script Date: 28-Mar-17 3:55:05 AM ******/
@@ -162,4 +161,3 @@ REFERENCES [dbo].[Url_Container] ([URL_ID])
 GO
 ALTER TABLE [dbo].[KeyWordsPosition_Titles] CHECK CONSTRAINT [FK_KeyWordsPosition_Titles_Url_Container]
 GO
-```
