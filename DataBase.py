@@ -9,12 +9,14 @@ class DataBaseMaster:
                                         "Trusted_Connection=yes;")
         self.Curser = self.Connector.cursor()
 
-	def InsertNewUrl(self,URL,status,freq):        
+	def InsertNewUrl(self,URL,status,freq,delay):      
+        threading.Lock().acquire()       
         try:
-           self.Connector.execute("insert into dbo.Url_Container (URLName,Status,Frequency) values ('%s','%s',%d)" % (Data,status,freq))
+           self.Connector.execute("insert into dbo.Url_Container (URLName,Status,Frequency,CrawlingDelay) values ('%s','%s',%d,%d)" % (Data,status,freq,delay))
            self.Connector.commit()
         except:
           self.Connector.rollback()
+        threading.Lock().release
         
 	def UpdateURLStatus(self,URL_ID,status):        
         try:
@@ -64,6 +66,17 @@ class DataBaseMaster:
            self.Connector.commit()
         except:
           self.Connector.rollback()
+	
+	def GetURLID(self,Url):
+        threading.Lock().acquire() 
+        try:
+            self.Curser.execute("Select File_ID from Url_Container where FileNname = ('%s')" % (Url))
+            result = self.Curser.fetchall()
+            self.Connector.commit()
+            return result
+        except:
+            self.Connector.rollback()  
+        threading.Lock().acquire() 
 	
 	def CloseConnection(self):
         self.Connector.close()
