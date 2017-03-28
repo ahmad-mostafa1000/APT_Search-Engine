@@ -81,7 +81,7 @@ class DataBaseMaster:
 	def CloseConnection(self):
         self.Connector.close()
         
-        
+       #self.Curser.execute("Select u.File_ID,FileName,Position from Url_Container u,KeyWords w, KeyWord_File_Position kwp where w.Word_ID = kwp.Word_ID and u.File_ID = kwp.File_ID and Word = '%s'" % (Word))
 #Get URLID given word       "select URL_ID from Url_Container where URLName = '%s'"
 #Get KeyWordID given word   "select KeyWord_ID from KeyWords where KeyWords = '%s'"
 #Get ImageKeyWord_ID given  "select ImageKeyWord_ID from ImageKeyWords where ImageKeyWords = '%s'"
