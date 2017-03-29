@@ -21,40 +21,15 @@ class Indexer:
     def StartIndexing(self):
         while True :
             Position = 0
-            TitlePosition=0
-            HeaderPosition =0
             Result = self.DataBaseMaster.GetURLIDByStatus('C')
             if Result:
-                #File_ID = int(Result[0][0]) 
+                #File_ID = str(Result[0][0]) 
                 File_ID = '1'
                 FilePath = os.path.join(self.FilesLocation,File_ID + '.txt') 
                 HtmlData = open(FilePath,"r")
                 #HtmlData = open("1.txt","r")
                 Title ,Headers, Paragraphs = self.GetTextFromHtml(HtmlData)
-
-                for word in Title:
-                    word = word.lower()
-                    if word not in self.StoppingWords:
-                        stemedWord = self.Porter.stem(word)
-                        if not self.DataBaseMaster.KeyWordDoesExist(stemedWord):
-                            self.DataBaseMaster.InsertKeyWord(stemedWord)
-                        Result2 = self.DataBaseMaster.GetWordID(stemedWord)
-                        Word_ID = int(Result2[0][0])
-                        self.DataBaseMaster.InsertKeyWordPositionTitle(File_ID,Word_ID,TitlePosition)
-                        TitlePosition = TitlePosition + 1
-
-                for word in Headers:
-                    word = word.lower()
-                    if word not in self.StoppingWords:
-                        stemedWord = self.Porter.stem(word)
-                        if not self.DataBaseMaster.KeyWordDoesExist(stemedWord):
-                            self.DataBaseMaster.InsertKeyWord(stemedWord)
-                        Result2 = self.DataBaseMaster.GetWordID(stemedWord)
-                        Word_ID = int(Result2[0][0])
-                        self.DataBaseMaster.InsertKeyWordPositionTitle(File_ID,Word_ID,HeaderPosition)
-                        HeaderPosition = HeaderPosition + 1
-
-
+                self.DataBaseMaster.InsertTitleHeaders(Title,File_ID,0)
                 for word in Paragraphs:
                     word = word.lower()
                     if word not in self.StoppingWords:
@@ -63,10 +38,8 @@ class Indexer:
                             self.DataBaseMaster.InsertKeyWord(stemedWord)
                         Result2 = self.DataBaseMaster.GetWordID(stemedWord)
                         Word_ID = int(Result2[0][0])
-                        self.DataBaseMaster.InsertKeyWordPositionParagraph(File_ID,Word_ID,Position)
+                        self.DataBaseMaster.InsertKeyWordFilePosition(Word_ID,File_ID,Position)
                         Position = Position + 1
-
-
                 self.DataBaseMaster.UpdateURLStatus('I', File_ID)  
             else :
                 break
@@ -74,8 +47,7 @@ class Indexer:
 
     def GetTextFromHtml(self,HtmlData):
         MySoup =  BeautifulSoup(HtmlData, 'html.parser')
-        PageTitleTemp = MySoup.find('title').string
-        PageTitle = re.split('[ \'.,;]',j.PageTitleTemp)
+        PageTitle = MySoup.find('title').string
         Texts = []
         Headers = []
         for i in self.Tags:
