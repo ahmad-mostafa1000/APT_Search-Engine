@@ -1,19 +1,12 @@
-import CrawelerMod
 #import IndexerMod
 import ThreadingMod
 import threading
-MyCraweler = CrawelerMod.Craweler()
 ##MyCraweler.Crawel()
 ##MyIndexer = IndexerMod.Indexer()
 
 ##MyIndexer.StartIndexing()
-#ThreadNumber = input('Enter number of threads: ')
+
 #MyThreads=[]
-#for i in range(int(ThreadNumber)):
-#    try:
-#       MyThreads.append(MyThread("Thread-"+ str(i+1)))
-#    except:
-#       print("Error: unable to start new thread")
 
 #MyCraweler.Crawel("https://moz.com/top500")
 #MyCraweler.Crawel("https://www.facebook.com/")
@@ -24,21 +17,22 @@ MyCraweler = CrawelerMod.Craweler()
 #MyCraweler.Crawel("https://docs.python.org/3/library/re.html")
 
 threadLock = threading.Lock()
-threads = []
-
+MyThreads = []
+ThreadNumber = input('Enter number of threads: ')
 # Create new threads
-thread1 = ThreadingMod.myThread(1, "Thread-1", 1,threadLock)
-thread2 = ThreadingMod.myThread(2, "Thread-2", 2,threadLock)
 
-# Start new Threads
-thread1.start()
-thread2.start()
+for i in range(int(ThreadNumber)):
+    try:
+       MyThreads.append(ThreadingMod.myThread(1, "Thread-"+str(i+1), 1,threadLock))
+    except:
+       print("Error: unable to start new thread")
 
-# Add threads to thread list
-threads.append(thread1)
-threads.append(thread2)
+for i in range(int(ThreadNumber)):
+    MyThreads[i].start()
+
 
 # Wait for all threads to complete
-for t in threads:
-    t.join()
+for i in MyThreads:
+    i.join()
+
 print( "Exiting Main Thread")
