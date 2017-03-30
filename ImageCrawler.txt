@@ -1,0 +1,81 @@
+import re
+import bs4
+import porter
+from nltk.stem.porter import *
+import DataBase
+import urllib.request
+
+
+
+Porter = PorterStemmer()
+        ##database object
+
+DataBaseMaster = DataBase.DataBaseMaster()
+
+#with open('1.txt') as html:
+file = open('1.txt', encoding="utf8")
+content = file.read()
+
+soup = bs4.BeautifulSoup(content)
+pos=0
+for image in soup.findAll("img"):
+#################Download##########################
+        file_id = "1"  # id from musgi
+        src = image.get('src','')
+        url="https://arabia.eurosport.com/"#delete on integration
+        imgname=""
+        type = src[-4:]
+        if type[0] == ".":
+            if src.lower().startswith("http"):
+                urllib.request.urlretrieve(src, r"C:\\Users\\Hoda\\PycharmProjects\\APT_phase1\\images\\" + file_id+"_"+ str(pos) + type)
+                imgname=str(pos) + type
+                DataBaseMaster.InsertImageName(imgname)
+
+            else:
+                #get base url from data base
+
+                #url=DataBaseMaster.GetURLByID()#take id from musgi #REMOVE COMMENT
+                image_url = urllib.parse.urljoin(url,src) #base url from mickey
+                urllib.request.urlretrieve(image_url,r"C:\\Users\\Hoda\\PycharmProjects\\APT_phase1\\images\\" + file_id + str(pos) + type)
+                imgname = str(pos) + type
+                DataBaseMaster.InsertImageName(imgname)
+
+            pos=pos+1
+
+                # store in database
+###########################################################
+            src = image.get('src', '')
+            remove_format = src[7:]  # remove images/
+            remove_format = remove_format[:-4]  # removing last 4 chars(.png,.jpg.....)
+
+            remove_format = remove_format.lower()
+
+            remove_format = re.split(r'[\\/\n\r\s+,_-]', remove_format)
+
+            for i in remove_format:
+                temp1 = Porter.stem(i)
+                if temp1 != '':
+                    if not DataBaseMaster.ImageKeyWordDoesExist(temp1):
+                        DataBaseMaster.InsertImageKeyWord(temp1)
+                        keyid1 = DataBaseMaster.GetImageWordID(temp1)
+                        Word_ID1 = int(keyid1[0][0])
+                        Image_ID1=DataBaseMaster.GetImageID_ByName(imgname)
+                        DataBaseMaster.Link_URL_KeyWords(3,Word_ID1,Image_ID1)#1: from musgi(file opened id),src:get id from imagenames table
+
+    ####################################################################################
+            alt=image.get('alt','')
+            alt = alt.lower()
+
+            alt = re.split(r'[\\/\n\r\s+,_-]', alt)
+
+            for b in alt:
+                temp=Porter.stem(b)
+                if temp !='':
+                    if not DataBaseMaster.ImageKeyWordDoesExist(temp):
+                        DataBaseMaster.InsertImageKeyWord(temp)
+                        keyid=DataBaseMaster.GetImageWordID(temp)
+                        Word_ID = int(keyid[0][0])
+                        Image_ID = DataBaseMaster.GetImageID_ByName(imgname)
+                        DataBaseMaster.Link_URL_KeyWords(3, Word_ID1,Image_ID)  # 1: from musgi(file opened id),src:get id from imagename
+
+
