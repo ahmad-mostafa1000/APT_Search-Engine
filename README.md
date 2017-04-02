@@ -3,8 +3,8 @@ Search Engine using Python, Java, Sql server and HTML created by [Ahmad Mostafa]
 
 ## Installation
 ### A Setting up the project
-1. Download the "Project" folder containing "PythonProject" and "Database" folders.
-2. Create a new project on PyCharm, Visual Studio or whatever IDE you are using and delete everything insde or make the "Python Project" folder your home or where to start.
+1. Download the "Project" folder or unzip "PHASE1 Final.zip" containing "PythonProject" and "Database" folders.
+2. Create a new project on PyCharm, Visual Studio or whatever IDE you are using and delete everything inside or make the "Python Project" folder your home or where to start.
 
 ### B Setting up the Database
 3. Open "SearchEngine.sql" inside "Database" folder and Excute the query to create the database.
